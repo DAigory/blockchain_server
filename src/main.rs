@@ -1,17 +1,19 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
+extern crate rocket;
+extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
-
 extern crate serde;
 extern crate serde_json;
 
+use rocket_contrib::{JSON};
 
-use rocket_contrib::{JSON, Value};
-
+mod reward;
+mod project;
+use reward::*;
+use project::*;
 
 
 #[get("/get_list")]
@@ -33,13 +35,17 @@ fn new(name: &str) -> String {
    name.to_string() + "new name"
 }
 
-#[derive(Serialize, Deserialize)]
-struct Message {
-    id: Option<i32>,
-    contents: String
+
+#[post("/users", format = "application/json", data = "<project>")]
+fn new_user(project: JSON<Project>) {
+    println!("{0}", project.id);
 }
 
-fn main() {
-    rocket::ignite().mount("/", routes![get_list, get_by_name, new]).launch();
-    //rocket::ignite().mount("/", routes![hello]).launch();
+fn main() {   
+    let rewards = vec!(Reward{name:"1".to_string(), cost: 2, id: 3});   
+    let project = Project{name:"Shar".to_string(), description:"my shar".to_string(), target: 3, rewards: rewards, id: 4};
+    let my_json = serde_json::to_string(&project).unwrap();
+
+    println!("{0} ", my_json);
+    rocket::ignite().mount("/", routes![get_list, get_by_name, new, new_user]).launch();
 }
