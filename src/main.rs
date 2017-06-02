@@ -8,7 +8,6 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 extern crate hyper;
-
 use rocket_contrib::{JSON};
 
 mod reward;
@@ -43,12 +42,14 @@ fn new_user(project: JSON<Project>) {
 }
 
 fn main() {   
-    
-    let rewards = vec!(Reward{name:"1".to_string(), cost: 2, id: 3});   
+    let mut rewards = vec!(Reward{name:"1".to_string(), cost: 2, id: 3});   
+    rewards.push(Reward{name:"2".to_string(), cost: 2, id: 4});
     let project = Project{name:"Shar".to_string(), description:"my shar".to_string(), target: 3, rewards: rewards, id: 4};
     let my_json = serde_json::to_string(&project).unwrap();
-    println!("{0} ", my_json);    
-    
-    dbRead::readProjects();    
+   
+    dbRead::readProjects();
+
+    println!("{0} ", my_json);
+
     rocket::ignite().mount("/", routes![get_list, get_by_name, new, new_user]).launch();
 }
