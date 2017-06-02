@@ -14,7 +14,7 @@ use dbRead;
 use reward::Reward;
 use project::Project;
 
-static URL: &'static str = "http://192.168.1.237:8080";
+static URL: &'static str = "http://192.168.1.237:8081";
 
 pub fn readProjects() -> String
 {
@@ -27,7 +27,7 @@ pub fn readRewards() -> String
     return read(&newURL);
 }
 
-pub fn writeProjects(project: Project)
+pub fn writeProject(project: Project)
 { 
     let mut list = "".to_string();
     let count = project.rewards.len();
@@ -44,7 +44,7 @@ pub fn writeProjects(project: Project)
     read(&newURL);
 }
 
-pub fn writeRewards(reward: Reward) 
+pub fn writeReward(reward: Reward) 
 {
     let newURL = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
     read(&newURL);
