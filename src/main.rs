@@ -31,6 +31,8 @@ struct Rewards {
 
 #[get("/get_list")]
 fn get_projects() -> String{
+    println!("get projects");
+    
    dbRead::readProjects()
 }
    

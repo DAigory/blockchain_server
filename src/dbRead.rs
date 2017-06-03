@@ -17,7 +17,7 @@ use dbRead;
 use reward::Reward;
 use project::Project;
 
-static URL: &'static str = "http://192.168.1.237:8081";
+static URL: &'static str = "10.208.0.48:8081";
 
 pub fn readProjects() -> String
 {
@@ -26,8 +26,8 @@ pub fn readProjects() -> String
 
 pub fn readRewards() -> String
 {
-    let newURL = format!("{}{}", URL, "/rewards");
-    return read(&newURL);
+    let new_url = format!("{}{}", URL, "/rewards");
+    return read(&new_url);
 }
 
 pub fn writeProject(project: Project)
@@ -41,29 +41,29 @@ pub fn writeProject(project: Project)
         {
             list.push_str(",");
         }
-    }
-    
-    let my_json = serde_json::to_string(&project).unwrap();    
-    let newURL = format!("{}/addData/{data}", URL, data = my_json);
-    println!("{}", newURL);
-    read(&newURL);
+    }    
+
+    let my_json = serde_json::to_string(&project).unwrap();
+    let new_url = format!("{}/addData/{data}", URL, data = my_json);
+    println!("{}", new_url);
+    read(&new_url);
 }
 
 pub fn writeReward(reward: Reward) 
 {
-    let newURL = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
-    read(&newURL);
+    let new_url = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
+    read(&new_url);
 }
 
 fn read(param: &str) -> String
-{
+{    
     let client = Client::new();
-
+    println!("Read: {}", param);
     let mut res = client.get(param)
         .header(Connection::close())
         .send().unwrap();
-
-    println!("Read: {}", param);
+ 
+    
     println!("Response: {}", res.status);
     println!("Headers:\n{}", res.headers);
     io::copy(&mut res, &mut io::stdout()).unwrap();
