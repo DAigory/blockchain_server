@@ -9,12 +9,15 @@ extern crate serde;
 extern crate serde_json;
 extern crate hyper;
 use rocket_contrib::{JSON};
+use std::io;
+use std::path::{Path, PathBuf};
 
 mod reward;
 mod project;
 mod dbRead;
 use reward::*;
 use project::*;
+use rocket::response::NamedFile;
 
 #[derive(Serialize, Deserialize)]
 struct Projects {
@@ -32,7 +35,7 @@ fn get_projects() -> String{
 }
    
 #[get("/get_by_id/<id>")]
-fn get_by_id(id: i32) -> String {     
+fn get_by_id(id: i32) -> String {    
   let projects: Projects = serde_json::from_str(&dbRead::readProjects()).
   expect(&format!("deserialize error get_by_id {0}", id));
   let project = projects.projects.iter().find(|&x| x.id == id);
@@ -42,6 +45,16 @@ fn get_by_id(id: i32) -> String {
 #[post("/new_project", format = "application/json", data = "<project>")]
 fn add_project(project: JSON<Project>) {    
     dbRead::writeProject(project.into_inner());     
+}
+
+#[get("/")]
+fn index() -> io::Result<NamedFile> {
+    NamedFile::open("static/index.html")
+}
+
+#[get("/file/<file..>")]
+fn files(file: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new("static/").join(file)).ok()
 }
 
 fn main() {   
@@ -56,5 +69,5 @@ fn main() {
 
     println!("{0} ", my_json);
 
-    rocket::ignite().mount("/", routes![get_projects, get_by_id,  add_project]).launch();
+    rocket::ignite().mount("/", routes![index, files, get_projects, get_by_id, add_project]).launch();
 }

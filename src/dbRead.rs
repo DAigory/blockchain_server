@@ -43,11 +43,10 @@ pub fn writeProject(project: Project)
         }
     }
     
-    let my_json = serde_json::to_string(&project).unwrap();
-    let newURL = format!("{}/addNewProj/{id}/{name}/{desc}/{target}/{list}", URL, id = project.id, name = project.name, desc = project.description, target = project.target, list = list);
-    let newURL2 = format!("{}/addData/{data}", URL, data = my_json);
-    println!("{}", newURL2);
-    read(&newURL2);
+    let my_json = serde_json::to_string(&project).unwrap();    
+    let newURL = format!("{}/addData/{data}", URL, data = my_json);
+    println!("{}", newURL);
+    read(&newURL);
 }
 
 pub fn writeReward(reward: Reward) 
