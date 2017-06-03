@@ -16,29 +16,32 @@ mod dbRead;
 use reward::*;
 use project::*;
 
+#[derive(Serialize, Deserialize)]
+struct Projects {
+   projects : Vec<Project>
+}
+
+#[derive(Serialize, Deserialize)]
+struct Rewards {
+    rewards : Vec<Reward>
+}
 
 #[get("/get_list")]
-fn get_list() -> &'static str {
-   "index test"
+fn get_projects() -> String{
+   dbRead::readProjects()
+}
+   
+#[get("/get_by_id/<id>")]
+fn get_by_id(id: i32) -> String {     
+  let projects: Projects = serde_json::from_str(&dbRead::readProjects()).
+  expect(&format!("deserialize error get_by_id {0}", id));
+  let project = projects.projects.iter().find(|&x| x.id == id);
+  serde_json::to_string(&project).unwrap()
 }
 
-#[get("/get_by_name/<name>")]
-fn get_by_name(name: &str) -> String {
-
-   println!("{0}", name);
-   name.to_string() + "return"
-}
-
-#[get("/new/<name>")]
-fn new(name: &str) -> String {
-   println!("{0}", name);
-   name.to_string() + "new name"
-}
-
-
-#[post("/users", format = "application/json", data = "<project>")]
-fn new_user(project: JSON<Project>) {
-    println!("{0}", project.id);
+#[post("/new_project", format = "application/json", data = "<project>")]
+fn add_project(project: JSON<Project>) {    
+    dbRead::writeProject(project.into_inner());     
 }
 
 fn main() {   
@@ -47,9 +50,11 @@ fn main() {
     let project = Project{name:"Shar".to_string(), description:"my shar".to_string(), target: 3, rewards: rewards, id: 4};
     let my_json = serde_json::to_string(&project).unwrap();
    
-    dbRead::readProjects();
+   let p: Project = serde_json::from_str(&my_json).unwrap();
+    println!("+++++ {0}", p.id);
+    //dbRead::readProjects();
 
     println!("{0} ", my_json);
 
-    rocket::ignite().mount("/", routes![get_list, get_by_name, new, new_user]).launch();
+    rocket::ignite().mount("/", routes![get_projects, get_by_id,  add_project]).launch();
 }

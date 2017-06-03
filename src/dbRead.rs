@@ -30,7 +30,7 @@ pub fn readRewards() -> String
     return read(&new_url);
 }
 
-pub fn writeProjects(project: Project)
+pub fn writeProject(project: Project)
 { 
     let mut list = "".to_string();
     let count = project.rewards.len();
@@ -49,7 +49,7 @@ pub fn writeProjects(project: Project)
     read(&new_url);
 }
 
-pub fn writeRewards(reward: Reward) 
+pub fn writeReward(reward: Reward) 
 {
     let new_url = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
     read(&new_url);
