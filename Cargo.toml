@@ -8,7 +8,8 @@ rocket = "*"
 serde = "*"
 serde_json = "*"
 rocket_codegen = "*"
-serde_derive = "*" 
+serde_derive = "*"
+hyper = "0.10.11"
 
 [dependencies.rocket_contrib]
 version = "*"
