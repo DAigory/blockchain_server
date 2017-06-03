@@ -8,16 +8,18 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 extern crate hyper;
-use rocket_contrib::{JSON};
-use std::io;
-use std::path::{Path, PathBuf};
 
 mod reward;
 mod project;
-mod dbRead;
+mod db_read;
+
+use rocket_contrib::{JSON};
+use std::io;
+use std::path::{Path, PathBuf};
 use reward::*;
 use project::*;
 use rocket::response::NamedFile;
+use rocket::Data;
 
 #[derive(Serialize, Deserialize)]
 struct Projects {
@@ -31,22 +33,25 @@ struct Rewards {
 
 #[get("/get_list")]
 fn get_projects() -> String{
-    println!("get projects");
-    
-   dbRead::readProjects()
+   println!("get projects");    
+   db_read::read_projects()
 }
    
 #[get("/get_by_id/<id>")]
-fn get_by_id(id: i32) -> String {    
-  let projects: Projects = serde_json::from_str(&dbRead::readProjects()).
-  expect(&format!("deserialize error get_by_id {0}", id));
-  let project = projects.projects.iter().find(|&x| x.id == id);
-  serde_json::to_string(&project).unwrap()
+fn get_by_id(id: i32) -> String {      
+   db_read::read_by_id(id)
+}
+
+#[get("/delete_by_id/<id>")]
+fn delete_by_id(id: i32) {    
+    println!("deleta id:{0}", id);
+    db_read::delete_by_id(id);     
 }
 
 #[post("/new_project", format = "application/json", data = "<project>")]
 fn add_project(project: JSON<Project>) {    
-    dbRead::writeProject(project.into_inner());     
+    println!("post__");
+    db_read::write_project(project.into_inner());     
 }
 
 #[get("/")]
@@ -59,17 +64,22 @@ fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
 }
 
+#[post("/post_data", data = "<paste>")]
+fn upload(paste: Data) -> io::Result<String> {   
+    let url = format!("\n");
+    paste.stream_to_file(Path::new(&"1"))?;
+    Ok(url)
+}
+
 fn main() {   
     let mut rewards = vec!(Reward{name:"1".to_string(), cost: 2, id: 3});   
     rewards.push(Reward{name:"2".to_string(), cost: 2, id: 4});
     let project = Project{name:"Shar".to_string(), description:"my shar".to_string(), target: 3, rewards: rewards, id: 4};
-    let my_json = serde_json::to_string(&project).unwrap();
-   
-   let p: Project = serde_json::from_str(&my_json).unwrap();
-    println!("+++++ {0}", p.id);
-    //dbRead::readProjects();
-
+    let projects = vec!(project);   
+    let my_json = serde_json::to_string(&projects).unwrap(); 
     println!("{0} ", my_json);
 
-    rocket::ignite().mount("/", routes![index, files, get_projects, get_by_id, add_project]).launch();
+    rocket::ignite().mount("/", routes![index, delete_by_id, files, upload, 
+                                        get_projects, get_by_id, add_project])
+                                        .launch();
 }

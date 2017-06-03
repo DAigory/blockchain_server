@@ -1,36 +1,33 @@
-#![feature(plugin)]
-#![plugin(rocket_codegen)]
-
 extern crate hyper;
-extern crate serde_derive;
+
 extern crate serde;
 extern crate serde_json;
 
-use std::env;
-use std::io;
 use std::io::Read;
-use std::borrow;
+
 
 use hyper::Client;
 use hyper::header::Connection;
-use dbRead;
-use reward::Reward;
 use project::Project;
 
-static URL: &'static str = "10.208.0.48:8081";
+static URL: &'static str = "http://10.208.0.48:8081";
 
-pub fn readProjects() -> String
+pub fn read_projects() -> String
 {
     return read(URL);
 }
 
-pub fn readRewards() -> String
-{
-    let new_url = format!("{}{}", URL, "/rewards");
-    return read(&new_url);
+pub fn read_by_id(id: i32) -> String {
+    let new_url = format!("{}{}/{}", URL, "/searchId", id);
+    read(&new_url)
 }
 
-pub fn writeProject(project: Project)
+pub fn delete_by_id(id: i32) {
+    let new_url = format!("{}{}/{}", URL, "/delete", id);
+    read(&new_url);
+}
+
+pub fn write_project(project: Project)
 { 
     let mut list = "".to_string();
     let count = project.rewards.len();
@@ -49,12 +46,6 @@ pub fn writeProject(project: Project)
     read(&new_url);
 }
 
-pub fn writeReward(reward: Reward) 
-{
-    let new_url = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
-    read(&new_url);
-}
-
 fn read(param: &str) -> String
 {    
     let client = Client::new();
@@ -66,8 +57,7 @@ fn read(param: &str) -> String
     
     println!("Response: {}", res.status);
     println!("Headers:\n{}", res.headers);
-    io::copy(&mut res, &mut io::stdout()).unwrap();
-
+   
     let mut body = String::new();
     res.read_to_string(&mut body).unwrap();
 
