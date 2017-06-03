@@ -26,8 +26,8 @@ pub fn readProjects() -> String
 
 pub fn readRewards() -> String
 {
-    let newURL = format!("{}{}", URL, "/rewards");
-    return read(&newURL);
+    let new_url = format!("{}{}", URL, "/rewards");
+    return read(&new_url);
 }
 
 pub fn writeProjects(project: Project)
@@ -44,16 +44,15 @@ pub fn writeProjects(project: Project)
     }
     
     let my_json = serde_json::to_string(&project).unwrap();
-    let newURL = format!("{}/addNewProj/{id}/{name}/{desc}/{target}/{list}", URL, id = project.id, name = project.name, desc = project.description, target = project.target, list = list);
-    let newURL2 = format!("{}/addData/{data}", URL, data = my_json);
-    println!("{}", newURL2);
-    read(&newURL2);
+    let new_url = format!("{}/addData/{data}", URL, data = my_json);
+    println!("{}", new_url);
+    read(&new_url);
 }
 
 pub fn writeRewards(reward: Reward) 
 {
-    let newURL = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
-    read(&newURL);
+    let new_url = format!("{}/addNewRew/{id}/{name}/{cost}", URL, id = reward.id, name = reward.name, cost = reward.cost);
+    read(&new_url);
 }
 
 fn read(param: &str) -> String
