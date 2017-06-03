@@ -2,6 +2,9 @@
 #![plugin(rocket_codegen)]
 
 extern crate hyper;
+extern crate serde_derive;
+extern crate serde;
+extern crate serde_json;
 
 use std::env;
 use std::io;
@@ -14,7 +17,7 @@ use dbRead;
 use reward::Reward;
 use project::Project;
 
-static URL: &'static str = "http://192.168.1.237:8080";
+static URL: &'static str = "http://192.168.1.237:8081";
 
 pub fn readProjects() -> String
 {
@@ -39,9 +42,12 @@ pub fn writeProjects(project: Project)
             list.push_str(",");
         }
     }
-
+    
+    let my_json = serde_json::to_string(&project).unwrap();
     let newURL = format!("{}/addNewProj/{id}/{name}/{desc}/{target}/{list}", URL, id = project.id, name = project.name, desc = project.description, target = project.target, list = list);
-    read(&newURL);
+    let newURL2 = format!("{}/addData/{data}", URL, data = my_json);
+    println!("{}", newURL2);
+    read(&newURL2);
 }
 
 pub fn writeRewards(reward: Reward) 
