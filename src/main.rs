@@ -20,6 +20,11 @@ use reward::*;
 use project::*;
 use rocket::response::NamedFile;
 use rocket::Data;
+use rocket::config::{self, ConfigError};
+
+const DEFAULT_TEMPLATE_DIR: &'static str = "Rocket.toml";
+
+
 
 #[derive(Serialize, Deserialize)]
 struct Projects {
@@ -78,6 +83,10 @@ fn main() {
     let projects = vec!(project);   
     let my_json = serde_json::to_string(&projects).unwrap(); 
     println!("{0} ", my_json);
+
+let template_dir = config::active().ok_or(ConfigError::NotFound)
+    .map(|config| config.root().join(DEFAULT_TEMPLATE_DIR))
+    .unwrap_or_else(|_| PathBuf::from(DEFAULT_TEMPLATE_DIR));
 
     rocket::ignite().mount("/", routes![index, delete_by_id, files, upload, 
                                         get_projects, get_by_id, add_project])

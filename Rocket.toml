@@ -1,0 +1,21 @@
+[development]
+address = "10.208.1.69"
+port = 8000
+workers = 2
+log = "normal"
+
+[staging]
+address = "10.208.1.69"
+port = 80
+workers = 2
+log = "normal"
+# don't use this key! generate your own and keep it private!
+#session_key = "VheMwXIBygSmOlZAhuWl2B+zgvTN3WW5"
+
+[production]
+address = "10.208.1.69"
+port = 80
+workers = 2
+log = "critical"
+# don't use this key! generate your own and keep it private!
+#session_key = "adL5fFIPmZBrlyHk2YT4NLV3YCk2gFXz"
