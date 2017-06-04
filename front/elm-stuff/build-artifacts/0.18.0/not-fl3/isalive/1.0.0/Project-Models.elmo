@@ -1,0 +1,8 @@
+var _not_fl3$isalive$Project_Models$Reward = F3(
+	function (a, b, c) {
+		return {name: a, cost: b, id: c};
+	});
+var _not_fl3$isalive$Project_Models$Project = F5(
+	function (a, b, c, d, e) {
+		return {name: a, description: b, target: c, rewards: d, id: e};
+	});

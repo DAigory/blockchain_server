@@ -1,0 +1,7 @@
+var _not_fl3$isalive$Project_Messages$FetchAllDone = function (a) {
+	return {ctor: 'FetchAllDone', _0: a};
+};
+var _not_fl3$isalive$Project_Messages$Fail = function (a) {
+	return {ctor: 'Fail', _0: a};
+};
+var _not_fl3$isalive$Project_Messages$NoOp = {ctor: 'NoOp'};

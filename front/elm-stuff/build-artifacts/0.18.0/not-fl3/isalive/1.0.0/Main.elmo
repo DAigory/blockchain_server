@@ -1,0 +1,1210 @@
+var _not_fl3$isalive$Main$generateButtonCode = F2(
+	function (name, rewards) {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'\n   <script src=\"main.js\"></script>\n    <div id=\"donate-widget\">\n    </div>\n    <script>\n      var widget_div = document.getElementById(\'donate-widget\');\n      Elm.Main.embed(widget_div, {\n        projectName: \' ',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				name,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'\', rewards: [',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						A3(
+							_elm_lang$core$List$foldr,
+							F2(
+								function (_p0, acc) {
+									var _p1 = _p0;
+									return A2(
+										_elm_lang$core$Basics_ops['++'],
+										acc,
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'{\"name\" : \"',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_p1.name,
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'\", \"cost\": ',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														_elm_lang$core$Basics$toString(_p1.cost),
+														'},')))));
+								}),
+							'',
+							rewards),
+						'\n   ]\n   });\n   </script>\n   '))));
+	});
+var _not_fl3$isalive$Main$viewReward = function (reward) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('list-group-item'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('badge'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(reward.cost),
+							'$')),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(reward.name),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _not_fl3$isalive$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _not_fl3$isalive$Main$encodeReward = function (newReward) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'name',
+				_1: _elm_lang$core$Json_Encode$string(newReward.name)
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'cost',
+					_1: _elm_lang$core$Json_Encode$int(newReward.cost)
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'id',
+						_1: _elm_lang$core$Json_Encode$int(newReward.id)
+					},
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _not_fl3$isalive$Main$formNewProjectBody = function (newProject) {
+	return _elm_lang$http$Http$jsonBody(
+		_elm_lang$core$Json_Encode$object(
+			{
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'name',
+					_1: _elm_lang$core$Json_Encode$string(newProject.name)
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'description',
+						_1: _elm_lang$core$Json_Encode$string(newProject.description)
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'target',
+							_1: _elm_lang$core$Json_Encode$int(newProject.target)
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'rewards',
+								_1: _elm_lang$core$Json_Encode$list(
+									A2(
+										_elm_lang$core$List$map,
+										function (l) {
+											return _not_fl3$isalive$Main$encodeReward(l);
+										},
+										newProject.rewards))
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: 'id',
+									_1: _elm_lang$core$Json_Encode$int(newProject.id)
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}));
+};
+var _not_fl3$isalive$Main$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {projects: a, addProjectWindowFlag: b, newProject: c, newReward: d, selectedProjectId: e, getFlag: f};
+	});
+var _not_fl3$isalive$Main$CloseDonateButton = {ctor: 'CloseDonateButton'};
+var _not_fl3$isalive$Main$SelectProject = function (a) {
+	return {ctor: 'SelectProject', _0: a};
+};
+var _not_fl3$isalive$Main$GetDonateButton = function (a) {
+	return {ctor: 'GetDonateButton', _0: a};
+};
+var _not_fl3$isalive$Main$PostProject = function (a) {
+	return {ctor: 'PostProject', _0: a};
+};
+var _not_fl3$isalive$Main$postProject = function (project) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_not_fl3$isalive$Main$PostProject,
+		A3(
+			_elm_lang$http$Http$post,
+			'http://localhost:3000/projects',
+			_not_fl3$isalive$Main$formNewProjectBody(project),
+			_not_fl3$isalive$Project_Commands$projectDecoder));
+};
+var _not_fl3$isalive$Main$Cancel = {ctor: 'Cancel'};
+var _not_fl3$isalive$Main$NewRewardCost = function (a) {
+	return {ctor: 'NewRewardCost', _0: a};
+};
+var _not_fl3$isalive$Main$NewRewardName = function (a) {
+	return {ctor: 'NewRewardName', _0: a};
+};
+var _not_fl3$isalive$Main$NewReward = {ctor: 'NewReward'};
+var _not_fl3$isalive$Main$NewProjectTarget = function (a) {
+	return {ctor: 'NewProjectTarget', _0: a};
+};
+var _not_fl3$isalive$Main$NewProjectDescription = function (a) {
+	return {ctor: 'NewProjectDescription', _0: a};
+};
+var _not_fl3$isalive$Main$NewProjectName = function (a) {
+	return {ctor: 'NewProjectName', _0: a};
+};
+var _not_fl3$isalive$Main$NewProject = {ctor: 'NewProject'};
+var _not_fl3$isalive$Main$AddProjectWindow = {ctor: 'AddProjectWindow'};
+var _not_fl3$isalive$Main$ProjectMsg = function (a) {
+	return {ctor: 'ProjectMsg', _0: a};
+};
+var _not_fl3$isalive$Main$fetchProjects = A2(_elm_lang$core$Platform_Cmd$map, _not_fl3$isalive$Main$ProjectMsg, _not_fl3$isalive$Project_Commands$fetchProjects);
+var _not_fl3$isalive$Main$init = {
+	ctor: '_Tuple2',
+	_0: A6(
+		_not_fl3$isalive$Main$Model,
+		{ctor: '[]'},
+		false,
+		_not_fl3$isalive$Project_Commands$initProject,
+		_not_fl3$isalive$Project_Commands$initReward,
+		0,
+		false),
+	_1: _not_fl3$isalive$Main$fetchProjects
+};
+var _not_fl3$isalive$Main$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'ProjectMsg':
+				var _p3 = _p2._0;
+				if (_p3._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{projects: _p3._0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					var _p4 = A2(_elm_lang$core$Debug$log, 'Project info fail', _p3._0._0);
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'AddProjectWindow':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{addProjectWindowFlag: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewProject':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newProject: _not_fl3$isalive$Project_Commands$initProject}),
+					_1: _not_fl3$isalive$Main$postProject(model.newProject)
+				};
+			case 'NewProjectName':
+				var project = model.newProject;
+				var newProject = _elm_lang$core$Native_Utils.update(
+					project,
+					{name: _p2._0});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newProject: newProject}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewProjectDescription':
+				var project = model.newProject;
+				var newProject = _elm_lang$core$Native_Utils.update(
+					project,
+					{description: _p2._0});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newProject: newProject}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewProjectTarget':
+				var project = model.newProject;
+				var newProject = _elm_lang$core$Native_Utils.update(
+					project,
+					{
+						target: A2(
+							_elm_lang$core$Result$withDefault,
+							0,
+							_elm_lang$core$String$toInt(_p2._0))
+					});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newProject: newProject}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewReward':
+				var newReward = model.newReward;
+				var project = model.newProject;
+				var rewards = project.rewards;
+				var newRewards = {ctor: '::', _0: newReward, _1: rewards};
+				var newProject = _elm_lang$core$Native_Utils.update(
+					project,
+					{rewards: newRewards});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newProject: newProject, newReward: _not_fl3$isalive$Project_Commands$initReward}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewRewardName':
+				var reward = model.newReward;
+				var newReward = _elm_lang$core$Native_Utils.update(
+					reward,
+					{name: _p2._0});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newReward: newReward}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewRewardCost':
+				var reward = model.newReward;
+				var newReward = _elm_lang$core$Native_Utils.update(
+					reward,
+					{
+						cost: A2(
+							_elm_lang$core$Result$withDefault,
+							0,
+							_elm_lang$core$String$toInt(_p2._0))
+					});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newReward: newReward}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Cancel':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{addProjectWindowFlag: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'PostProject':
+				if (_p2._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{addProjectWindowFlag: false}),
+						_1: _not_fl3$isalive$Main$fetchProjects
+					};
+				} else {
+					var _p5 = A2(_elm_lang$core$Debug$log, 'Project info fail', _p2._0._0);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{addProjectWindowFlag: false}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'GetDonateButton':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{getFlag: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SelectProject':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{selectedProjectId: _p2._0, getFlag: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'CloseDonateButton':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{selectedProjectId: 0, getFlag: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _not_fl3$isalive$Main$Nothing = {ctor: 'Nothing'};
+var _not_fl3$isalive$Main$viewProject = F2(
+	function (project, selectedProjectId) {
+		return A2(
+			_elm_lang$html$Html$tr,
+			{
+				ctor: '::',
+				_0: _elm_lang$core$Native_Utils.eq(project.id, selectedProjectId) ? _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$Nothing) : _elm_lang$html$Html_Events$onClick(
+					_not_fl3$isalive$Main$SelectProject(project.id)),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$td,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$span,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(project.name),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$td,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(project.description),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$core$Native_Utils.eq(project.id, selectedProjectId) ? A2(
+									_elm_lang$html$Html$p,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$button,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('btn-success'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(
+														_not_fl3$isalive$Main$GetDonateButton(project.id)),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$type_('button'),
+														_1: {ctor: '[]'}
+													}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Получить код виджета'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}) : A2(
+									_elm_lang$html$Html$div,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _not_fl3$isalive$Main$view = function (_p6) {
+	var _p7 = _p6;
+	var _p9 = _p7.selectedProjectId;
+	var _p8 = _p7.projects;
+	return A2(
+		_elm_lang$html$Html$body,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _not_fl3$isalive$Style$headerContainerStyle,
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$CloseDonateButton),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('container'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$h1,
+								{
+									ctor: '::',
+									_0: _not_fl3$isalive$Style$headerWhiteStyle,
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(' Краудфандинг'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$p,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Добро пожаловать на страницу краудфаунинга, использующего систему блокчейн.'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('container'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$table,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('table table-hover'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$thead,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$tr,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$th,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Название'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$th,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Описание'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$tbody,
+										{ctor: '[]'},
+										A2(
+											_elm_lang$core$List$map,
+											function (l) {
+												return A2(_not_fl3$isalive$Main$viewProject, l, _p9);
+											},
+											_p8)),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$AddProjectWindow),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Добавить проект'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: _p7.addProjectWindowFlag ? A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('container'),
+							_1: {
+								ctor: '::',
+								_0: _not_fl3$isalive$Style$fullStyle,
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('container'),
+									_1: {
+										ctor: '::',
+										_0: _not_fl3$isalive$Style$addContainerStyle,
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$h2,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Добавить проект'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$form,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$div,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('form-group'),
+														_1: {ctor: '[]'}
+													},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$label,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Название'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$input,
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$class('form-control'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$placeholder('Название'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Events$onInput(_not_fl3$isalive$Main$NewProjectName),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																},
+																{ctor: '[]'}),
+															_1: {ctor: '[]'}
+														}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$div,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('form-group'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$label,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text('Описание'),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$textarea,
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$class('form-control'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$placeholder('Описание'),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Attributes$rows(3),
+																				_1: {
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Events$onInput(_not_fl3$isalive$Main$NewProjectDescription),
+																					_1: {ctor: '[]'}
+																				}
+																			}
+																		}
+																	},
+																	{ctor: '[]'}),
+																_1: {ctor: '[]'}
+															}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$div,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$class('form-group'),
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$label,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('Цель'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$div,
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$class('input-group'),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Attributes$style(
+																					{
+																						ctor: '::',
+																						_0: {ctor: '_Tuple2', _0: 'width', _1: '200px'},
+																						_1: {ctor: '[]'}
+																					}),
+																				_1: {ctor: '[]'}
+																			}
+																		},
+																		{
+																			ctor: '::',
+																			_0: A2(
+																				_elm_lang$html$Html$div,
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Attributes$class('input-group-addon'),
+																					_1: {ctor: '[]'}
+																				},
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html$text('$'),
+																					_1: {ctor: '[]'}
+																				}),
+																			_1: {
+																				ctor: '::',
+																				_0: A2(
+																					_elm_lang$html$Html$input,
+																					{
+																						ctor: '::',
+																						_0: _elm_lang$html$Html_Attributes$class('form-control'),
+																						_1: {
+																							ctor: '::',
+																							_0: _elm_lang$html$Html_Attributes$placeholder('Сумма'),
+																							_1: {
+																								ctor: '::',
+																								_0: _elm_lang$html$Html_Events$onInput(_not_fl3$isalive$Main$NewProjectTarget),
+																								_1: {ctor: '[]'}
+																							}
+																						}
+																					},
+																					{ctor: '[]'}),
+																				_1: {
+																					ctor: '::',
+																					_0: A2(
+																						_elm_lang$html$Html$div,
+																						{
+																							ctor: '::',
+																							_0: _elm_lang$html$Html_Attributes$class('input-group-addon'),
+																							_1: {ctor: '[]'}
+																						},
+																						{
+																							ctor: '::',
+																							_0: _elm_lang$html$Html$text('.00'),
+																							_1: {ctor: '[]'}
+																						}),
+																					_1: {ctor: '[]'}
+																				}
+																			}
+																		}),
+																	_1: {ctor: '[]'}
+																}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$div,
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$class('form-group'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$style(
+																			{
+																				ctor: '::',
+																				_0: {ctor: '_Tuple2', _0: 'width', _1: '400px'},
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {ctor: '[]'}
+																	}
+																},
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$label,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text('Награды'),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$html$Html$ul,
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Attributes$class('list-group'),
+																				_1: {ctor: '[]'}
+																			},
+																			A2(
+																				_elm_lang$core$List$append,
+																				A2(
+																					_elm_lang$core$List$map,
+																					function (l) {
+																						return _not_fl3$isalive$Main$viewReward(l);
+																					},
+																					_p7.newProject.rewards),
+																				{
+																					ctor: '::',
+																					_0: A2(
+																						_elm_lang$html$Html$li,
+																						{
+																							ctor: '::',
+																							_0: _elm_lang$html$Html_Attributes$class('list-group-item form-inline'),
+																							_1: {ctor: '[]'}
+																						},
+																						{
+																							ctor: '::',
+																							_0: A2(
+																								_elm_lang$html$Html$input,
+																								{
+																									ctor: '::',
+																									_0: _elm_lang$html$Html_Attributes$class('form-control input-sm'),
+																									_1: {
+																										ctor: '::',
+																										_0: _elm_lang$html$Html_Attributes$placeholder('Награда'),
+																										_1: {
+																											ctor: '::',
+																											_0: _elm_lang$html$Html_Attributes$style(
+																												{
+																													ctor: '::',
+																													_0: {ctor: '_Tuple2', _0: 'width', _1: '150px'},
+																													_1: {ctor: '[]'}
+																												}),
+																											_1: {
+																												ctor: '::',
+																												_0: _elm_lang$html$Html_Events$onInput(_not_fl3$isalive$Main$NewRewardName),
+																												_1: {ctor: '[]'}
+																											}
+																										}
+																									}
+																								},
+																								{ctor: '[]'}),
+																							_1: {
+																								ctor: '::',
+																								_0: A2(
+																									_elm_lang$html$Html$button,
+																									{
+																										ctor: '::',
+																										_0: _elm_lang$html$Html_Attributes$class('btn btn-success btn-sm pull-right'),
+																										_1: {
+																											ctor: '::',
+																											_0: _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$NewReward),
+																											_1: {
+																												ctor: '::',
+																												_0: _elm_lang$html$Html_Attributes$type_('button'),
+																												_1: {ctor: '[]'}
+																											}
+																										}
+																									},
+																									{
+																										ctor: '::',
+																										_0: _elm_lang$html$Html$text('+'),
+																										_1: {ctor: '[]'}
+																									}),
+																								_1: {
+																									ctor: '::',
+																									_0: A2(
+																										_elm_lang$html$Html$div,
+																										{
+																											ctor: '::',
+																											_0: _elm_lang$html$Html_Attributes$class('input-group'),
+																											_1: {
+																												ctor: '::',
+																												_0: _elm_lang$html$Html_Attributes$style(
+																													{
+																														ctor: '::',
+																														_0: {ctor: '_Tuple2', _0: 'width', _1: '100px'},
+																														_1: {
+																															ctor: '::',
+																															_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '20px'},
+																															_1: {ctor: '[]'}
+																														}
+																													}),
+																												_1: {ctor: '[]'}
+																											}
+																										},
+																										{
+																											ctor: '::',
+																											_0: A2(
+																												_elm_lang$html$Html$div,
+																												{
+																													ctor: '::',
+																													_0: _elm_lang$html$Html_Attributes$class('input-group-addon input-sm'),
+																													_1: {ctor: '[]'}
+																												},
+																												{
+																													ctor: '::',
+																													_0: _elm_lang$html$Html$text('$'),
+																													_1: {ctor: '[]'}
+																												}),
+																											_1: {
+																												ctor: '::',
+																												_0: A2(
+																													_elm_lang$html$Html$input,
+																													{
+																														ctor: '::',
+																														_0: _elm_lang$html$Html_Attributes$class('form-control input-sm'),
+																														_1: {
+																															ctor: '::',
+																															_0: _elm_lang$html$Html_Attributes$placeholder('Сумма'),
+																															_1: {
+																																ctor: '::',
+																																_0: _elm_lang$html$Html_Events$onInput(_not_fl3$isalive$Main$NewRewardCost),
+																																_1: {ctor: '[]'}
+																															}
+																														}
+																													},
+																													{ctor: '[]'}),
+																												_1: {ctor: '[]'}
+																											}
+																										}),
+																									_1: {ctor: '[]'}
+																								}
+																							}
+																						}),
+																					_1: {ctor: '[]'}
+																				})),
+																		_1: {ctor: '[]'}
+																	}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$p,
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$class('pull-right'),
+																		_1: {ctor: '[]'}
+																	},
+																	{
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$html$Html$button,
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Attributes$class('btn btn-default'),
+																				_1: {
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Attributes$style(
+																						{
+																							ctor: '::',
+																							_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '10px'},
+																							_1: {ctor: '[]'}
+																						}),
+																					_1: {
+																						ctor: '::',
+																						_0: _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$Cancel),
+																						_1: {
+																							ctor: '::',
+																							_0: _elm_lang$html$Html_Attributes$type_('button'),
+																							_1: {ctor: '[]'}
+																						}
+																					}
+																				}
+																			},
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html$text('Отмена'),
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {
+																			ctor: '::',
+																			_0: A2(
+																				_elm_lang$html$Html$button,
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Attributes$class('btn btn-success'),
+																					_1: {
+																						ctor: '::',
+																						_0: _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$NewProject),
+																						_1: {
+																							ctor: '::',
+																							_0: _elm_lang$html$Html_Attributes$type_('button'),
+																							_1: {ctor: '[]'}
+																						}
+																					}
+																				},
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html$text('Добавить'),
+																					_1: {ctor: '[]'}
+																				}),
+																			_1: {ctor: '[]'}
+																		}
+																	}),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}) : A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: _p7.getFlag ? A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('container'),
+								_1: {
+									ctor: '::',
+									_0: _not_fl3$isalive$Style$fullStyle,
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('container'),
+										_1: {
+											ctor: '::',
+											_0: _not_fl3$isalive$Style$addContainerStyle,
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$style(
+													{
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'max-width', _1: '700px'},
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									},
+									{
+										ctor: '::',
+										_0: function () {
+											var project = A2(
+												_elm_lang$core$Maybe$withDefault,
+												_not_fl3$isalive$Project_Commands$initProject,
+												_elm_lang$core$List$head(
+													A2(
+														_elm_lang$core$List$filter,
+														function (l) {
+															return _elm_lang$core$Native_Utils.eq(l.id, _p9);
+														},
+														_p8)));
+											return A2(
+												_elm_lang$html$Html$textarea,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$style(
+														{
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$rows(20),
+														_1: {ctor: '[]'}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(
+														A2(_not_fl3$isalive$Main$generateButtonCode, project.name, project.rewards)),
+													_1: {ctor: '[]'}
+												});
+										}(),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$p,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('pull-right'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$button,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('btn btn-default'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$style(
+																	{
+																		ctor: '::',
+																		_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '10px'},
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Events$onClick(_not_fl3$isalive$Main$CloseDonateButton),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$type_('button'),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('ОK'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
+							}) : A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _not_fl3$isalive$Main$main = _elm_lang$html$Html$program(
+	{init: _not_fl3$isalive$Main$init, view: _not_fl3$isalive$Main$view, update: _not_fl3$isalive$Main$update, subscriptions: _not_fl3$isalive$Main$subscriptions})();

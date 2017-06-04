@@ -1,0 +1,48 @@
+var _not_fl3$isalive$Project_Commands$rewardDecoder = A2(
+	_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+	A2(
+		_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+		A2(
+			_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+			_elm_lang$core$Json_Decode$succeed(_not_fl3$isalive$Project_Models$Reward),
+			A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string)),
+		A2(_elm_lang$core$Json_Decode$field, 'cost', _elm_lang$core$Json_Decode$int)),
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int));
+var _not_fl3$isalive$Project_Commands$projectDecoder = A2(
+	_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+	A2(
+		_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+		A2(
+			_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+			A2(
+				_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+				A2(
+					_elm_lang$json_extra$Json_Decode_Extra_ops['|:'],
+					_elm_lang$core$Json_Decode$succeed(_not_fl3$isalive$Project_Models$Project),
+					A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string)),
+				A2(_elm_lang$core$Json_Decode$field, 'description', _elm_lang$core$Json_Decode$string)),
+			A2(_elm_lang$core$Json_Decode$field, 'target', _elm_lang$core$Json_Decode$int)),
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'rewards',
+			_elm_lang$core$Json_Decode$list(_not_fl3$isalive$Project_Commands$rewardDecoder))),
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int));
+var _not_fl3$isalive$Project_Commands$initReward = {name: '', cost: 0, id: 0};
+var _not_fl3$isalive$Project_Commands$initProject = {
+	name: '',
+	description: '',
+	target: 0,
+	rewards: {ctor: '[]'},
+	id: 0
+};
+var _not_fl3$isalive$Project_Commands$resourceUrl = 'http://localhost:3000/projects';
+var _not_fl3$isalive$Project_Commands$Fetch = function (a) {
+	return {ctor: 'Fetch', _0: a};
+};
+var _not_fl3$isalive$Project_Commands$fetchProjects = A2(
+	_elm_lang$http$Http$send,
+	_not_fl3$isalive$Project_Commands$Fetch,
+	A2(
+		_elm_lang$http$Http$get,
+		_not_fl3$isalive$Project_Commands$resourceUrl,
+		_elm_lang$core$Json_Decode$list(_not_fl3$isalive$Project_Commands$projectDecoder)));
